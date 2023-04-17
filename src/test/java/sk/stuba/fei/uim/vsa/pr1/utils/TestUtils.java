@@ -6,8 +6,7 @@ import org.slf4j.LoggerFactory;
 import sk.stuba.fei.uim.vsa.pr1.AbstractThesisService;
 import sk.stuba.fei.uim.vsa.pr1.bonus.Pageable;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.lang.reflect.*;
 import java.sql.*;
 import java.util.*;
@@ -265,22 +264,14 @@ public class TestUtils {
     private static final Set<String> IGNORE_TABLES = new HashSet<>(Arrays.asList("seq_gen_sequence", "sequence"));
 
     public static void clearDB(Connection dbConnection) {
-        if (tables.isEmpty()) {
-            try (Statement stmt = dbConnection.createStatement()) {
-                ResultSet set = stmt.executeQuery("SELECT tablename FROM pg_tables WHERE schemaname = current_schema()");
-                while (set.next()) {
-                    String table = set.getString("tablename");
-                    if (table != null && !table.isEmpty() && !IGNORE_TABLES.contains(table)) {
-                        tables.add(table);
-                    }
-                }
-            } catch (SQLException ex) {
-                log.error(ex.getMessage(), ex);
-            }
-        }
-        //runSQLStatement(dbConnection, "SET FOREIGN_KEY_CHECKS=0", true);
-        tables.forEach(table -> runSQLStatement(dbConnection, "TRUNCATE TABLE " + table + " CASCADE", false));
-        //runSQLStatement(dbConnection, "SET FOREIGN_KEY_CHECKS=1", true);
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("vsa-project-1");
+        EntityManager em = emf.createEntityManager();
+        em.getTransaction().begin();
+        em.createQuery("DELETE FROM Assignment").executeUpdate();
+        em.createQuery("DELETE FROM Student").executeUpdate();
+        em.createQuery("DELETE FROM Teacher").executeUpdate();
+        em.getTransaction().commit();
+        emf.close();
     }
 
     //----------------------------------------------

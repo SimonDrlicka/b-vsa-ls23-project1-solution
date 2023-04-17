@@ -1,15 +1,13 @@
 package sk.stuba.fei.uim.vsa.pr1.entities;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import sk.stuba.fei.uim.vsa.pr1.enums.AssignmentStatus;
 import sk.stuba.fei.uim.vsa.pr1.enums.AssignmentType;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.UUID;
 
 @Entity
 @Table(name = "assignment")
